@@ -1,4 +1,10 @@
 import React, { Component } from 'react'
+import PetfulApiService from '../../services/petful-api-services'
+
+// components
+import PetCard from '../../components/PetCard/PetCard'
+import HumanCard from '../../components/HumanCard/HumanCard'
+
 
 class AdoptionPage extends Component {
   constructor(props) {
@@ -12,7 +18,29 @@ class AdoptionPage extends Component {
   }
 
   componentDidMount() {
-    
+    PetfulApiService.getCats()
+      .then(data => {
+        this.setState({ cats: data})
+      })
+      .catch(error => {
+        this.setState({ error: error })
+      })
+
+    PetfulApiService.getDogs()
+    .then(data => {
+      this.setState({ dogs: data})
+    })
+    .catch(error => {
+      this.setState({ error: error })
+    })
+
+    PetfulApiService.getPeople()
+      .then(data => {
+        this.setState({ people: data})
+      })
+      .catch(error => {
+        this.setState({ error: error })
+      })
   }
 
 

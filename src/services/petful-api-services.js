@@ -12,9 +12,14 @@ const PetfulApiService = {
       : res.json())
   },
 
-  deleteCats(name) {
-    return fetch(`${config.API_ENDPOINT}`)
-  }
+  deleteCat(name) {
+    return fetch(`${config.API_ENDPOINT}/cat/${name}`, {
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+  },
 
   getDogs() {
     return fetch(`${config.API_ENDPOINT}/dog`, {
@@ -26,6 +31,15 @@ const PetfulApiService = {
       ? res.json().then(e => Promise.reject(e))
       : res.json())
   }, 
+
+  deleteDog(name) {
+    return fetch(`${config.API_ENDPOINT}/dog/${name}`, {
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+  },
 
   getPeople() {
     return fetch(`${config.API_ENDPOINT}/people`, {
@@ -54,12 +68,20 @@ const PetfulApiService = {
         ? res.json().then(e => Promise.reject(e))
         : res.json()
       )
-  }
+  },
+
+  deletePeople(name) {
+    return fetch(`${config.API_ENDPOINT}/people/${name}`, {
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+  },
 }
 
 
 
 
 export default PetfulApiService
-// localhost:8000/api/pets/dog
-// localhost:8000/api/pets/cat
+
