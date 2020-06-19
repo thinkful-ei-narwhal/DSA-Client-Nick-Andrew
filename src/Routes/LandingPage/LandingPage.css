@@ -1,0 +1,18 @@
+.dogPic {
+  margin: 3rem auto;
+  height: 200px;
+  width: 50%;
+  text-align: center;
+  display: block;
+}
+
+.tagLine {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.adoptPageBtn {
+  margin: 10px 10px 50px 0 ;
+  display: flex;
+  justify-content: center;
+}
