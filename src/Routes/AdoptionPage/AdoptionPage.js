@@ -122,25 +122,34 @@ class AdoptionPage extends Component {
     return (
       <>
         <nav />
-        <h1>Animals Available For Adoption</h1>
+        <h2>Animals Available For Adoption</h2>
+        <main>
+          <div className="card">
+            <PetCard pet={cat} />
+            {people[0] === user ? <AdoptButton executeAdoption={this.executeAdoption} type={"cat"} person={people[0]} /> : null}
+          </div>
 
-        <PetCard pet={cat} />
-        {people[0] === user ? <AdoptButton className="adoptBtn" executeAdoption={this.executeAdoption} type={"cat"} person={people[0]} /> : null}
+          <div className="card">
+            <PetCard pet={dog} />
+            {people[0] === user ? <AdoptButton executeAdoption={this.executeAdoption} type={"dog"} person={people[0]} /> : null}
+          </div>
 
-        <PetCard pet={dog} />
-        {people[0] === user ? <AdoptButton className="adoptBtn" executeAdoption={this.executeAdoption} type={"dog"} person={people[0]} /> : null}
+          <div className="form-card">
+            <ul>
+              {people.map((person, index) => (
+                <li key={index}>
+                  {index === 0 && <span>Up Next: </span>}
+                  {person.name}
+                </li>
+              ))}
+            </ul>
 
-
-        <ul>
-          {people.map((person, index) => {
-            return <li key={index}>{person.name}</li>;
-          })}
-        </ul>
-
-        <form onSubmit={(e) => this.onSubmitToQueue(e)}>
-          <label>Name: <input type="text" name="name"/></label>
-          <input type="submit" value="Submit" />
-        </form>
+            <form onSubmit={(e) => this.onSubmitToQueue(e)}>
+              <label className="basic-label">Name: <input className="basic-input" type="text" name="name"/></label>
+              <input className="submit-btn" type="submit" value="Submit" />
+            </form>
+          </div>
+        </main>
       </>
     )
   }

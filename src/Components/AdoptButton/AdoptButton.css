@@ -1,0 +1,13 @@
+.adoptBtn {
+  margin: 10px auto;
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+  background-color: var(--color-medium);
+  color: var(--font-dark);
+  width: 8rem;
+  padding: 1rem;
+  border: none;
+  text-transform: uppercase;
+  font-weight: bolder;
+}

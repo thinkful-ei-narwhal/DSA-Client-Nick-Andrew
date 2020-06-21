@@ -8,12 +8,11 @@ class LandingPage extends Component {
       <div>
         <h3 className="tagLine">Welcome To Our Adoption Site!</h3>
         <img className="dogPic" src={dogs} alt="Logo" />
-        <span className="adoptPageBtn">
           <Link
+            className="adoptPageBtn"
             to='/adoption'>
             Adopt A Pet
           </Link>
-        </span>
       </div>
     )
   }

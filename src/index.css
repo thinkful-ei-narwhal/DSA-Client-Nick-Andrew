@@ -4,11 +4,18 @@
   box-sizing: border-box;
 }
 
+:root {
+  --color-light: #F1F7ED;
+  --font-dark: #54494B;
+  --color-medium: #91C7B1;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #F1F7ED;
+  background-color: var(--color-light);
+  color: var(--font-dark);
 }

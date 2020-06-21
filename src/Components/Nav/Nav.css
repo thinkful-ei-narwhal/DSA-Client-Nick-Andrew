@@ -1,6 +1,6 @@
 .nav {
-  background-color: #91C7B1;
-  color: #54494B;
+  background-color: var(--color-medium);
+  color: var(--font-dark);
   padding: 1rem;
 }
 

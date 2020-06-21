@@ -1,5 +1,60 @@
-.adoptBtn {
-  margin: 10px 10px 50px 0 ;
+h2 {
+  text-align: center;
+  margin: 4rem 0;
+}
+
+main {
+  max-width: 75rem;
+  margin: 0 auto 4rem;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
+
+.card {
+  border: 2px solid var(--color-medium);
+  margin: 2rem;
+  padding: 1rem 2rem;
+  max-width: 32rem;
+}
+
+.form-card {
+  margin: 2rem;
+  padding: 1rem 2rem;
+  max-width: 32rem;
+}
+
+ul {
+  list-style: none;
+  margin-bottom: 2rem;
+  font-weight: bold;
+}
+
+li {
+  margin: .5rem;
+}
+
+.basic-label {
+  font-size: 20px;
+}
+
+.basic-input {
+  font-size: 16px;
+  width: 200px;
+  padding: 5px;
+}
+
+.submit-btn {
+  font-size: 1.1rem;
+  display: block;
+  padding: .5rem 1rem;
+  margin: 1rem auto;
+  background-color: var(--font-dark);
+  color: var(--color-light);
+  border: none;
+  font-weight: bolder;
+  cursor: pointer;
+}
+
+
