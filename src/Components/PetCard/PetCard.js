@@ -4,7 +4,6 @@ import './PetCard.css'
 export class PetCard extends Component {
   render() {
     const { age, breed, imageDescription, imageURL, name, sex, story } = this.props.pet
-    console.log(this.props)
     return (
       <article className="petCard">
         <h2 className="petDetails">{name}</h2>

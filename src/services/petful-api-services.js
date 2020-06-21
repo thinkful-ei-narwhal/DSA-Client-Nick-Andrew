@@ -52,15 +52,13 @@ const PetfulApiService = {
       : res.json())
   },
 
-  postPeople(people) {
-    const { name } = people;
-
-    return fetch(`${config.API_ENDPOINT}/people/${name}`, {
+  postPeople(user) {
+    return fetch(`${config.API_ENDPOINT}/people/${user}`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
       }, body: JSON.stringify({
-        name
+        user
       }),
     })
     .then(res => 
