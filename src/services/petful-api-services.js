@@ -9,7 +9,7 @@ const PetfulApiService = {
     );
   },
 
-  deleteCat(name) {
+  deleteCat() {
     return fetch(`${config.API_ENDPOINT}/pets/cat`, {
       method: "DELETE",
       headers: {
@@ -26,7 +26,7 @@ const PetfulApiService = {
     );
   },
 
-  deleteDog(name) {
+  deleteDog() {
     return fetch(`${config.API_ENDPOINT}/pets/dog`, {
       method: "DELETE",
       headers: {
