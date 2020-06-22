@@ -28,17 +28,16 @@ class AdoptionPage extends Component {
 
   executeAdoption = (pet, reenableSubmit = false) => {
     let isCat;
-    let petAdopted;
-
     const promise1 =
       pet === "cat"
         ? PetfulApiService.deleteCat()
             .then((data) => {
+              isCat = true;
               return PetfulApiService.getCat();
             })
-            .then((data) => {
+            .catch((err) => {
               isCat = true;
-              return (petAdopted = data);
+              return null;
             })
         : PetfulApiService.deleteDog()
             .then((data) => {
@@ -46,7 +45,11 @@ class AdoptionPage extends Component {
             })
             .then((data) => {
               isCat = false;
-              return (petAdopted = data);
+              return data;
+            })
+            .catch((err) => {
+              isCat = true;
+              return null;
             });
 
     const promise2 = PetfulApiService.deletePeople().then((data) => {
@@ -57,19 +60,19 @@ class AdoptionPage extends Component {
       if (reenableSubmit) {
         isCat
           ? this.setState({
-              cat: petAdopted,
+              cat: res1,
               people: res2,
               enableSubmit: true,
             })
           : this.setState({
-              dog: petAdopted,
+              dog: res1,
               people: res2,
               enableSubmit: true,
             });
       } else {
         isCat
-          ? this.setState({ cat: petAdopted, people: res2 })
-          : this.setState({ dog: petAdopted, people: res2 });
+          ? this.setState({ cat: res1, people: res2 })
+          : this.setState({ dog: res1, people: res2 });
       }
     });
   };
@@ -108,7 +111,7 @@ class AdoptionPage extends Component {
         newState.cat = data;
       })
       .catch((error) => {
-        this.setState({ error: error });
+        return (newState.cat = null);
       });
 
     const promise2 = PetfulApiService.getDog()
@@ -116,7 +119,7 @@ class AdoptionPage extends Component {
         newState.dog = data;
       })
       .catch((error) => {
-        this.setState({ error: error });
+        return (newState.dog = null);
       });
 
     const promise3 = PetfulApiService.getPeople()
@@ -139,11 +142,20 @@ class AdoptionPage extends Component {
 
   intervalFunction(state, executeAdoption, onAddRandomAdopter) {
     const { name } = state.people[0];
-    if (name !== state.user) {
+    const { cat, dog } = state;
+
+    if (name !== state.user && cat !== null && dog !== null) {
       const isCat = Math.floor(Math.random() * Math.floor(2));
       const catOrDog = isCat ? "cat" : "dog";
-
       executeAdoption(catOrDog);
+    }
+
+    if (name !== state.user && cat === null && dog !== null) {
+      executeAdoption("dog");
+    }
+
+    if (name !== state.user && cat !== null && dog === null) {
+      executeAdoption("cat");
     }
 
     if (state.people.length < 5) {
@@ -171,31 +183,34 @@ class AdoptionPage extends Component {
 
   loadPage() {
     const { cat, dog, people, user } = this.state;
+    const catCard = (
+      <>
+        <PetCard pet={cat} />
+        {people[0].name === user ? (
+          <AdoptButton executeAdoption={this.executeAdoption} type={"cat"} />
+        ) : null}
+      </>
+    );
+
+    const dogCard = (
+      <>
+        <PetCard pet={dog} />
+        {people[0].name === user ? (
+          <AdoptButton executeAdoption={this.executeAdoption} type={"dog"} />
+        ) : null}
+      </>
+    );
     return (
       <>
         <nav />
         <h2>Animals Available For Adoption</h2>
         <main>
           <div className="card">
-            <PetCard pet={cat} />
-            {people[0].name === user ? (
-              <AdoptButton
-                executeAdoption={this.executeAdoption}
-                type={"cat"}
-              />
-            ) : null}
+            {cat !== null ? catCard : <p>All cats have been adopted!</p>}
           </div>
-
           <div className="card">
-            <PetCard pet={dog} />
-            {people[0].name === user ? (
-              <AdoptButton
-                executeAdoption={this.executeAdoption}
-                type={"dog"}
-              />
-            ) : null}
+            {dog !== null ? dogCard : <p>All dogs have been adopted!</p>}
           </div>
-
           <div className="form-card">
             <ul>
               {people.map((person, index) => (

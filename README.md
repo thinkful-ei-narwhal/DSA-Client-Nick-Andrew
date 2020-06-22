@@ -2,9 +2,21 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+Petful is a place for pet lovers to adopt their new pets.  Our mission is to help the animals first and find them a home. People that enter the queue are given a choice of cat of dog to adopt.  You get to see both animals and then make your choice on which is the right one for you!
+
+Authors
+Nicholas Evelson
+Andrew Durrant
+
+# Tech stack:
+-Javascript
+-React
+-CSS
+
 ## Available Scripts
 
 In the project directory, you can run:
+npm start
 
 ### `npm start`
 
