@@ -1,10 +1,16 @@
-import React, { Component } from 'react'
-import PetfulApiService from '../../services/petful-api-services'
-import './AdoptionPage.css'
+import React, { Component } from "react";
+import PetfulApiService from "../../services/petful-api-services";
+import "./AdoptionPage.css";
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  colors,
+  animals,
+} from "unique-names-generator";
 
 // components
-import PetCard from '../../components/PetCard/PetCard'
-import AdoptButton from "../../components/AdoptButton/AdoptButton.js"
+import PetCard from "./../../Components/PetCard/PetCard";
+import AdoptButton from "./../../Components/AdoptButton/AdoptButton";
 
 class AdoptionPage extends Component {
   constructor(props) {
@@ -16,45 +22,79 @@ class AdoptionPage extends Component {
       error: null,
       initialized: false,
       user: "",
-    }
+      enableSubmit: true,
+    };
   }
 
-  executeAdoption = (pet, owner) => {
+  executeAdoption = (pet, reenableSubmit = false) => {
     let isCat;
     let petAdopted;
-    let persons;
 
-    const promise1 = pet === "cat" ?
-      PetfulApiService.deleteCat()
-        .then(data => {
-          PetfulApiService.getCat().then(data => {
-            isCat = true;
-            return petAdopted = data;
-          });
-        })
-      : PetfulApiService.deleteDog()
-        .then(data => {
-          PetfulApiService.getDog().then(data => {
-            isCat = false;
-            return petAdopted = data;
-          });
-        })
+    const promise1 =
+      pet === "cat"
+        ? PetfulApiService.deleteCat()
+            .then((data) => {
+              return PetfulApiService.getCat();
+            })
+            .then((data) => {
+              isCat = true;
+              return (petAdopted = data);
+            })
+        : PetfulApiService.deleteDog()
+            .then((data) => {
+              return PetfulApiService.getDog();
+            })
+            .then((data) => {
+              isCat = false;
+              return (petAdopted = data);
+            });
 
-    const promise2 = PetfulApiService.deletePeople(owner)
-      .then(data => {
-        PetfulApiService.getPeople().then(data => {
-          return persons = data;
-        });
-      })
-
-    Promise.all([promise1, promise2]).then(() => {
-      isCat ? this.setState({ cat: petAdopted, people: persons }) : this.setState({ dog: petAdopted, people: persons })
+    const promise2 = PetfulApiService.deletePeople().then((data) => {
+      return PetfulApiService.getPeople();
     });
-  }
+
+    Promise.all([promise1, promise2]).then(([res1, res2]) => {
+      if (reenableSubmit) {
+        isCat
+          ? this.setState({
+              cat: petAdopted,
+              people: res2,
+              enableSubmit: true,
+            })
+          : this.setState({
+              dog: petAdopted,
+              people: res2,
+              enableSubmit: true,
+            });
+      } else {
+        isCat
+          ? this.setState({ cat: petAdopted, people: res2 })
+          : this.setState({ dog: petAdopted, people: res2 });
+      }
+    });
+  };
+
+  onAddRandomAdopter = (adopterName) => {
+    PetfulApiService.postPeople(adopterName)
+      .then((data) => {
+        return PetfulApiService.getPeople();
+      })
+      .then((data) => this.setState({ people: data }))
+      .catch((error) => {
+        this.setState({ error: error });
+      });
+  };
 
   componentDidMount() {
-    setInterval(this.intervalFunction(), 5000);
-
+    setInterval(
+      () =>
+        this.intervalFunction(
+          this.state,
+          this.executeAdoption,
+          this.onAddRandomAdopter
+        ),
+      5000
+    );
     let newState = {
       cat: null,
       dog: null,
@@ -62,34 +102,34 @@ class AdoptionPage extends Component {
       error: null,
       initialized: false,
       user: "",
-    }
+    };
     const promise1 = PetfulApiService.getCat()
-      .then(data => {
+      .then((data) => {
         newState.cat = data;
       })
-      .catch(error => {
-        this.setState({ error: error })
-      })
+      .catch((error) => {
+        this.setState({ error: error });
+      });
 
     const promise2 = PetfulApiService.getDog()
-      .then(data => {
+      .then((data) => {
         newState.dog = data;
       })
-      .catch(error => {
-        this.setState({ error: error })
-      })
+      .catch((error) => {
+        this.setState({ error: error });
+      });
 
     const promise3 = PetfulApiService.getPeople()
-      .then(data => {
+      .then((data) => {
         newState.people = data;
       })
-      .catch(error => {
-        this.setState({ error: error })
-      })
+      .catch((error) => {
+        this.setState({ error: error });
+      });
 
     Promise.all([promise1, promise2, promise3]).then(() => {
       newState.initialized = true;
-      this.setState(newState)
+      this.setState(newState);
     });
   }
 
@@ -97,24 +137,36 @@ class AdoptionPage extends Component {
     clearInterval(this.interval);
   }
 
-  intervalFunction() {
-    console.log('TESTING');
-    //if this.state.user !== this.people[0] move the queue
-    //otherwise stop, although leave the timer running
+  intervalFunction(state, executeAdoption, onAddRandomAdopter) {
+    const { name } = state.people[0];
+    if (name !== state.user) {
+      const isCat = Math.floor(Math.random() * Math.floor(2));
+      const catOrDog = isCat ? "cat" : "dog";
+
+      executeAdoption(catOrDog);
+    }
+
+    if (state.people.length < 5) {
+      const shortName = uniqueNamesGenerator({
+        dictionaries: [colors, adjectives, animals],
+      });
+      onAddRandomAdopter(shortName);
+    }
   }
 
   onSubmitToQueue(e) {
     e.preventDefault();
-    console.log(e.target.name.value)
     this.setState({ user: e.target.name.value });
     PetfulApiService.postPeople(e.target.name.value)
-      .then(data => {
-          PetfulApiService.getPeople().then(data => this.setState({people: data}));
+      .then((data) => {
+        PetfulApiService.getPeople().then((data) =>
+          this.setState({ people: data, enableSubmit: false })
+        );
       })
-      .catch(error => {
-        this.setState({ error: error })
-    })
-    return e.target.name.value = "";
+      .catch((error) => {
+        this.setState({ error: error });
+      });
+    return (e.target.name.value = "");
   }
 
   loadPage() {
@@ -126,12 +178,22 @@ class AdoptionPage extends Component {
         <main>
           <div className="card">
             <PetCard pet={cat} />
-            {people[0] === user ? <AdoptButton executeAdoption={this.executeAdoption} type={"cat"} person={people[0]} /> : null}
+            {people[0].name === user ? (
+              <AdoptButton
+                executeAdoption={this.executeAdoption}
+                type={"cat"}
+              />
+            ) : null}
           </div>
 
           <div className="card">
             <PetCard pet={dog} />
-            {people[0] === user ? <AdoptButton executeAdoption={this.executeAdoption} type={"dog"} person={people[0]} /> : null}
+            {people[0].name === user ? (
+              <AdoptButton
+                executeAdoption={this.executeAdoption}
+                type={"dog"}
+              />
+            ) : null}
           </div>
 
           <div className="form-card">
@@ -144,29 +206,24 @@ class AdoptionPage extends Component {
               ))}
             </ul>
 
-            <form onSubmit={(e) => this.onSubmitToQueue(e)}>
-              <label className="basic-label">Name: <input className="basic-input" type="text" name="name"/></label>
-              <input className="submit-btn" type="submit" value="Submit" />
-            </form>
+            {this.state.enableSubmit && (
+              <form onSubmit={(e) => this.onSubmitToQueue(e)}>
+                <label className="basic-label">
+                  Name:{" "}
+                  <input className="basic-input" type="text" name="name" />
+                </label>
+                <input className="submit-btn" type="submit" value="Submit" />
+              </form>
+            )}
           </div>
         </main>
       </>
-    )
+    );
   }
 
   render() {
-    return (
-      <>
-      {this.state.initialized ? this.loadPage() : null}</>
-    )
+    return <>{this.state.initialized ? this.loadPage() : null}</>;
   }
 }
 
-export default AdoptionPage
-
-
-// {/* Display list of people currently in line - Person object returning null, otherwise this works*/ }
-// {/* hide adopt button if name NOT in front - Todo, need to make a user state, and set it when a person adds themself to the line */ }
-// {/* 5 seconds, the user at the front of the line remove, select random pet */ }
-// {/* When user at front, make adopt button appear, stop the move queue timer */ }
-// {/* ONLY when user at front , generate random person at back of line every five seconds until line is 5, max 5 people */ }
+export default AdoptionPage;
